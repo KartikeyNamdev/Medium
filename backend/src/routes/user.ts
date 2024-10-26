@@ -46,7 +46,7 @@ userRouter.post("/signup", async (c) => {
 
 userRouter.post("/signin", async (c) => {
   const prisma = new PrismaClient({
-    datasourceUrl: c.env?.DATABASE_URL,
+    datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const body = await c.req.json();
   const success = signinInput.safeParse(body);
@@ -56,13 +56,13 @@ userRouter.post("/signin", async (c) => {
     });
   }
   try {
-    console.log("existingUser");
-    const existingUser = await prisma.user.findUnique({
-      //@ts-ignore
+    const existingUser = await prisma.user.findFirst({
       where: {
         name: body.name,
+        password: body.password,
       },
     });
+    console.log(existingUser);
     if (!existingUser) {
       return c.text("User doesn't exist");
     }

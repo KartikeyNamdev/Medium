@@ -88,24 +88,40 @@ blogRouter.put("/", async (c) => {
   });
 });
 
-blogRouter.get("/", async (c) => {
-  const body = await c.req.json();
+// blogRouter.get("/", async (c) => {
+// const body = await c.req.json();
+// const prisma = new PrismaClient({
+// datasourceUrl: c.env.DATABASE_URL,
+// }).$extends(withAccelerate());
+// try {
+// const blog = await prisma.blog.findFirst({
+// where: {
+// id: body.id,
+// },
+// });
+// return c.json({
+// @ts-ignore
+// blog,
+// });
+// } catch (e) {
+// return c.json({ msg: e });
+// }
+// });
+
+blogRouter.get("/:id", async (c) => {
+  console.log("Working");
+  const id = c.req.param("id");
   const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
+    datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
-  try {
-    const blog = await prisma.blog.findFirst({
-      where: {
-        id: body.id,
-      },
-    });
-    return c.json({
-      //@ts-ignore
-      blog,
-    });
-  } catch (e) {
-    return c.json({ msg: e });
-  }
+
+  const post = await prisma.blog.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+
+  return c.json(post);
 });
 
 blogRouter.get("/bulk", async (c) => {
