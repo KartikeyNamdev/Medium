@@ -8,7 +8,7 @@ export const Blog = () => {
   const { loading, blog } = useBlog({
     id: Number(id), // convert id to number
   });
-  if (loading == true) {
+  if (loading == true || !blog) {
     return (
       <div>
         <div className="flex justify-center items-center h-screen">
