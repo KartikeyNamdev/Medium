@@ -30,11 +30,11 @@ userRouter.post("/signup", async (c) => {
     const newUser = await prisma.user.create({
       data: {
         name: body.name,
+        username: body.username,
         password: body.password,
       },
     });
 
-    console.log(c);
     const jwt = await sign({ id: newUser.id }, c.env.JWT_SECRET);
     return c.json({ jwt });
   } catch (e) {
@@ -58,11 +58,11 @@ userRouter.post("/signin", async (c) => {
   try {
     const existingUser = await prisma.user.findFirst({
       where: {
-        name: body.name,
+        username: body.username,
         password: body.password,
       },
     });
-    console.log(existingUser);
+
     if (!existingUser) {
       return c.text("User doesn't exist");
     }
