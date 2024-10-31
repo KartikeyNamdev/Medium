@@ -15,7 +15,7 @@ export const Publish = () => {
           <input
             type="text"
             id="title"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
             placeholder="Title"
             required
             onChange={(e) => {
@@ -26,7 +26,7 @@ export const Publish = () => {
             <textarea
               id="message"
               rows={8}
-              className="focus-outline-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+              className="focus-outline-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 "
               placeholder="Write your thoughts here..."
               onChange={(e) => {
                 setDescription(e.target.value);
@@ -36,7 +36,7 @@ export const Publish = () => {
           <div className="pt-10 ">
             <button
               type="submit"
-              className=" inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 hover:bg-blue-800"
+              className=" inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-green-500 rounded-lg focus:ring-4 focus:ring-green-200 hover:bg-green-700"
               onClick={async () => {
                 // Add your logic here to publish the post
                 console.log("working");
