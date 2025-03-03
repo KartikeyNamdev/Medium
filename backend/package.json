@@ -6,7 +6,9 @@
   },
   "dependencies": {
     "@kartikeynamdev/medium-common": "^1.0.0",
-    "@prisma/client": "^5.21.1",
+    "@neondatabase/serverless": "^0.10.4",
+    "@prisma/adapter-neon": "^6.4.1",
+    "@prisma/client": "^6.4.1",
     "@prisma/extension-accelerate": "^1.2.1",
     "hono": "^4.7.2",
     "jsonwebtoken": "^9.0.2"

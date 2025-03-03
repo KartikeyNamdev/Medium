@@ -1,8 +1,10 @@
 // import { PrismaClient } from "@prisma/client/edge";
 import { createbloginput, updateBlog } from "@kartikeynamdev/medium-common";
-import { PrismaClient } from "@prisma/client/edge";
-import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
+import { getPrismaClient } from "../../prisma";
+
+// In your handler
+// Now use prisma for queries
 
 import { verify } from "hono/jwt";
 
@@ -12,7 +14,7 @@ export const blogRouter = new Hono<{
     JWT_SECRET: string;
   };
   Variables: {
-    userId: string;
+    userId: number;
   };
 }>();
 
@@ -32,10 +34,9 @@ blogRouter.use("/*", async (c, next) => {
       error: "Wrong Auth header",
     });
   }
-  console.log(header);
-  //@ts-ignore
 
-  c.set("userId", response.id);
+  c.set("userId", Number(response.id));
+  console.log("Success");
   await next();
 });
 
@@ -48,9 +49,8 @@ blogRouter.post("/", async (c) => {
     });
   }
   try {
-    const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    const prisma = getPrismaClient(c.env.DATABASE_URL);
+
     const blog = await prisma.blog.create({
       data: {
         title: body.title,
@@ -69,9 +69,8 @@ blogRouter.post("/", async (c) => {
 
 blogRouter.put("/", async (c) => {
   const body = await c.req.json();
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = getPrismaClient(c.env.DATABASE_URL);
+
   const success = updateBlog.safeParse(body);
   if (!success) {
     return c.json({
@@ -94,10 +93,9 @@ blogRouter.put("/", async (c) => {
 });
 
 blogRouter.get("/bulk", async (c) => {
-  //pagination
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = getPrismaClient(c.env.DATABASE_URL);
+
+  console.log("Working");
   try {
     const blog = await prisma.blog.findMany({
       select: {
@@ -121,9 +119,8 @@ blogRouter.get("/bulk", async (c) => {
 
 blogRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = getPrismaClient(c.env.DATABASE_URL);
+
   try {
     const blog = await prisma.blog.findUnique({
       where: {

@@ -226,7 +226,7 @@ export namespace Prisma {
 
   /**
    * Prisma Client JS version: 5.22.0
-   * Query Engine version: 605197351a3c8bdd595af2d2a9bc3025bca48ea2
+   * Query Engine version: a9055b89e58b4b5bfb59600785423b1db3d0e75d
    */
   export type PrismaVersion = {
     client: string
@@ -1842,6 +1842,7 @@ export namespace Prisma {
      * Filter which Users to update
      */
     where?: UserWhereInput
+    limit?: number
   }
 
   /**
@@ -1896,6 +1897,7 @@ export namespace Prisma {
      * Filter which Users to delete
      */
     where?: UserWhereInput
+    limit?: number
   }
 
   /**
@@ -2833,6 +2835,7 @@ export namespace Prisma {
      * Filter which Blogs to update
      */
     where?: BlogWhereInput
+    limit?: number
   }
 
   /**
@@ -2887,6 +2890,7 @@ export namespace Prisma {
      * Filter which Blogs to delete
      */
     where?: BlogWhereInput
+    limit?: number
   }
 
   /**
@@ -3073,7 +3077,7 @@ export namespace Prisma {
     title?: StringFilter<"Blog"> | string
     content?: StringFilter<"Blog"> | string
     published?: BoolFilter<"Blog"> | boolean
-    author?: XOR<UserRelationFilter, UserWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type BlogOrderByWithRelationInput = {
@@ -3094,7 +3098,7 @@ export namespace Prisma {
     title?: StringFilter<"Blog"> | string
     content?: StringFilter<"Blog"> | string
     published?: BoolFilter<"Blog"> | boolean
-    author?: XOR<UserRelationFilter, UserWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type BlogOrderByWithAggregationInput = {
@@ -3327,7 +3331,7 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type UserRelationFilter = {
+  export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
   }
