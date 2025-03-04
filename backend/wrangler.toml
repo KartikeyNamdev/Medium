@@ -1,7 +1,8 @@
 name = "backend"
 main = "src/index.ts"
 compatibility_date = "2024-10-16"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = [ "nodejs_compat" ]
+
 
 [vars]
 DATABASE_URL="postgresql://neondb_owner:SDb4BImLOx3V@ep-bitter-queen-a5r0000r.us-east-2.aws.neon.tech/neondb?sslmode=require"

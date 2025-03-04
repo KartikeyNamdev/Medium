@@ -1,32 +1,36 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type SignupInput } from "@kartikeynamdev/medium-common";
+import { signinInput, type SignupInput } from "@kartikeynamdev/medium-common";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import DATABASE_URL from "../config";
+import { useAuthtoSignin, useAuthtoSignup } from "../hooks";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
-  const [postInputs, setPostInputs] = useState<SignupInput>({
+  const [signinCredentials, setSigninCredentials] = useState<signinInput>({
+    username: "",
+    password: "",
+  });
+  const [signupInputs, setSignupInputs] = useState<SignupInput>({
     name: "",
     username: "",
     password: "",
   });
 
-  async function SendRequest() {
-    try {
-      const res = await axios.post(
-        `${DATABASE_URL}/api/v1/user/${
-          type === "signup" ? "signup" : "signin"
-        }`,
-        postInputs
-      );
-      const jwt = String(res.data.jwt);
-      localStorage.setItem("token", jwt);
+  async function SendRequest(
+    signinCredentials: signinInput,
+    postInputs: SignupInput
+  ) {
+    if (type === "signup") {
+      const signup = await useAuthtoSignup({
+        ...postInputs,
+        name: postInputs.name || "",
+      });
+    }
+    if (type === "signin") {
+      const auth = await useAuthtoSignin(signinCredentials);
       navigate("/blogs");
-    } catch (e) {
-      //Alert
-      console.log(e);
     }
   }
 
@@ -56,8 +60,8 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   label="Name"
                   placeholder="Zenitsu"
                   onChange={(e) => {
-                    setPostInputs({
-                      ...postInputs,
+                    setSignupInputs({
+                      ...signupInputs,
                       name: e.target.value,
                     });
                   }}
@@ -67,8 +71,12 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 label="Username"
                 placeholder="Zenitsu@gmail.com"
                 onChange={(e) => {
-                  setPostInputs({
-                    ...postInputs,
+                  setSigninCredentials({
+                    ...signinCredentials,
+                    username: e.target.value,
+                  });
+                  setSignupInputs({
+                    ...signupInputs,
                     username: e.target.value,
                   });
                 }}
@@ -77,8 +85,12 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 label="Password"
                 placeholder="*********"
                 onChange={(e) => {
-                  setPostInputs({
-                    ...postInputs,
+                  setSigninCredentials({
+                    ...signinCredentials,
+                    password: e.target.value,
+                  });
+                  setSignupInputs({
+                    ...signupInputs,
                     password: e.target.value,
                   });
                 }}
@@ -86,7 +98,9 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
               <button
                 type="button"
                 className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 w-full"
-                onClick={SendRequest}
+                onClick={() => {
+                  SendRequest(signinCredentials, signupInputs);
+                }}
               >
                 {type === "signup" ? "Sign up " : "Sign in"}
               </button>

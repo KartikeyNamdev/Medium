@@ -35,7 +35,6 @@ userRouter.post("/signup", async (c) => {
     return c.json({ jwt });
   } catch (e) {
     c.status(403);
-    console.log(e);
     return c.json({ error: e });
   }
 });
@@ -64,6 +63,6 @@ userRouter.post("/signin", async (c) => {
     const jwt = await sign({ id: existingUser.id }, c.env.JWT_SECRET);
     return c.json({ jwt });
   } catch (e) {
-    return c.json({ e });
+    return c.json({ msg: "Wrong input" });
   }
 });
