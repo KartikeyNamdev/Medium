@@ -1,116 +1,130 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { signinInput, type SignupInput } from "@kartikeynamdev/medium-common";
-import axios from "axios";
+import { signinInput, SignupInput } from "@kartikeynamdev/medium-common";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import DATABASE_URL from "../config";
-import { useAuthtoSignin, useAuthtoSignup } from "../hooks";
+import { signinUser, signupUser } from "../hooks";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const [signinCredentials, setSigninCredentials] = useState<signinInput>({
     username: "",
     password: "",
   });
+
   const [signupInputs, setSignupInputs] = useState<SignupInput>({
     name: "",
     username: "",
     password: "",
   });
 
-  async function SendRequest(
-    signinCredentials: signinInput,
-    postInputs: SignupInput
-  ) {
-    if (type === "signup") {
-      const signup = await useAuthtoSignup({
-        ...postInputs,
-        name: postInputs.name || "",
-      });
-    }
-    if (type === "signin") {
-      const auth = await useAuthtoSignin(signinCredentials);
+  async function handleAuth() {
+    try {
+      setLoading(true);
+      setError("");
+
+      if (type === "signup") {
+        await signupUser({
+          name: signupInputs.name || "",
+          username: signupInputs.username,
+          password: signupInputs.password,
+        });
+      } else {
+        await signinUser(signinCredentials);
+      }
+
       navigate("/blogs");
+    } catch (err) {
+      console.log(err);
+      setError("Authentication failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className=" h-screen flex justify-center flex-col">
+    <div className="h-screen flex justify-center flex-col">
       <div className="flex justify-center">
-        <div>
-          <div className="">
-            <div className="text-3xl font-extrabold px-10">
-              {type === "signup" ? "Create an account" : "Log in to account"}
-            </div>
-            <div className="text-slate-500 mt-3 px-10 ">
-              {type === "signup"
-                ? "Already have an account ?"
-                : "Don't have an account?"}
-              <Link
-                className="hover:underline pl-2"
-                to={type === "signup" ? "/signin" : "/signup"}
-              >
-                {type === "signup" ? "Log in" : "Sign up"}
-              </Link>
-            </div>
+        <div className="w-full max-w-md">
+          <h1 className="text-3xl font-extrabold px-10">
+            {type === "signup" ? "Create an account" : "Log in to account"}
+          </h1>
 
-            <div className="mt-6">
-              {type === "signup" ? (
-                <LabelledInputBox
-                  label="Name"
-                  placeholder="Zenitsu"
-                  onChange={(e) => {
-                    setSignupInputs({
-                      ...signupInputs,
-                      name: e.target.value,
-                    });
-                  }}
-                />
-              ) : null}{" "}
+          <p className="text-slate-500 mt-3 px-10">
+            {type === "signup"
+              ? "Already have an account?"
+              : "Don't have an account?"}
+            <Link
+              className="hover:underline pl-2"
+              to={type === "signup" ? "/signin" : "/signup"}
+            >
+              {type === "signup" ? "Log in" : "Sign up"}
+            </Link>
+          </p>
+
+          <div className="mt-6 px-10">
+            {type === "signup" && (
               <LabelledInputBox
-                label="Username"
-                placeholder="Zenitsu@gmail.com"
-                onChange={(e) => {
-                  setSigninCredentials({
-                    ...signinCredentials,
-                    username: e.target.value,
-                  });
-                  setSignupInputs({
-                    ...signupInputs,
-                    username: e.target.value,
-                  });
-                }}
+                label="Name"
+                placeholder="Zenitsu"
+                onChange={(e) =>
+                  setSignupInputs({ ...signupInputs, name: e.target.value })
+                }
               />
-              <LabelledInputBox
-                label="Password"
-                placeholder="*********"
-                onChange={(e) => {
-                  setSigninCredentials({
-                    ...signinCredentials,
-                    password: e.target.value,
-                  });
-                  setSignupInputs({
-                    ...signupInputs,
-                    password: e.target.value,
-                  });
-                }}
-              />
-              <button
-                type="button"
-                className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 w-full"
-                onClick={() => {
-                  SendRequest(signinCredentials, signupInputs);
-                }}
-              >
-                {type === "signup" ? "Sign up " : "Sign in"}
-              </button>
-            </div>
+            )}
+
+            <LabelledInputBox
+              label="Username"
+              placeholder="zenitsu@gmail.com"
+              onChange={(e) => {
+                setSigninCredentials({
+                  ...signinCredentials,
+                  username: e.target.value,
+                });
+                setSignupInputs({
+                  ...signupInputs,
+                  username: e.target.value,
+                });
+              }}
+            />
+
+            <LabelledInputBox
+              label="Password"
+              type="password"
+              placeholder="********"
+              onChange={(e) => {
+                setSigninCredentials({
+                  ...signinCredentials,
+                  password: e.target.value,
+                });
+                setSignupInputs({
+                  ...signupInputs,
+                  password: e.target.value,
+                });
+              }}
+            />
+
+            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
+            <button
+              disabled={loading}
+              onClick={handleAuth}
+              className="w-full text-white bg-gray-800 hover:bg-gray-900 rounded-lg text-sm px-5 py-2.5"
+            >
+              {loading
+                ? "Please wait..."
+                : type === "signup"
+                ? "Sign up"
+                : "Sign in"}
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 interface LabelledInputType {
   label: string;
   placeholder: string;

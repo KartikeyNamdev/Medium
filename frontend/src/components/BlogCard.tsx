@@ -1,60 +1,75 @@
 import { Link } from "react-router-dom";
+import { Bookmark, Heart } from "lucide-react";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 interface BlogCardProps {
   id: number;
   authorname: string;
   title: string;
   content: string;
   publishedDate: string;
+  className?: string;
 }
+
 export const BlogCard = ({
   id,
   authorname,
+  className,
   title,
   content,
   publishedDate,
 }: BlogCardProps) => {
   return (
     <Link to={`/blog/${id}`}>
-      <div className="p-4 border-b border-slate-200 pb-4 w-screen max-w-screen-md cursor-pointer">
-        <div className="flex pb-2 max-w-screen-lg">
-          <div>
-            <Avatar1 name="Kartikey" />
-          </div>
-          <div className="pl-2 font-extralight text-slate-600">
-            {authorname}
-          </div>
-          <div className="pl-2 font-thin text-slate-400 ">{publishedDate} </div>
+      <div
+        className={`group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border ${className}`}
+      >
+        {/* Accent */}
+        <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-green-500 to-emerald-600 rounded-l-2xl" />
+
+        {/* Author */}
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <Avatar1 name={authorname} />
+          <span className="font-medium text-gray-700">{authorname}</span>
+          <span>•</span>
+          <span>{publishedDate}</span>
         </div>
-        <div className="text-2xl font-semibold">{title}</div>
-        <div className="font-thin text-slate-500 ">
-          {" "}
-          {content.slice(0, 100) + "..."}
+
+        {/* Title */}
+        <h2 className="mt-4 text-2xl font-semibold leading-tight group-hover:text-green-600 transition">
+          {title}
+        </h2>
+
+        {/* Excerpt */}
+        <p className="mt-3 text-gray-500 leading-relaxed">
+          {content.slice(0, 160)}...
+        </p>
+
+        {/* Footer */}
+        <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
+          <span>{Math.ceil(content.length / 120)} min read</span>
+
+          <div className="flex items-center gap-4">
+            <Heart className="w-4 h-4 hover:text-red-500 cursor-pointer" />
+            <Bookmark className="w-4 h-4 hover:text-black cursor-pointer" />
+          </div>
         </div>
-        <div className="pl-2 font-thin text-slate-500 text-sm pt-5">{`${Math.ceil(
-          content.length / 100
-        )} minutes read`}</div>
       </div>
     </Link>
   );
 };
+
 export function Avatar1({ name }: { name: string }) {
   return (
-    <div className="relative w-6 h-6 inline-flex items-center justify-center  overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-      <span className="font-sm font-thin text-gray-600 dark:text-gray-300">
-        {name[0]}
-      </span>
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center font-bold text-xs">
+      {name[0]}
     </div>
   );
 }
 
 export function Avatar2({ name }: { name: string }) {
   return (
-    <div className="relative w-10 h-10 inline-flex items-center justify-center  overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-      <span className="font-sm font-thin text-gray-600 dark:text-gray-300">
-        {name[0]}
-      </span>
+    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center font-bold">
+      {name[0]}
     </div>
   );
 }

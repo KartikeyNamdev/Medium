@@ -3,67 +3,62 @@ import { AppBar } from "../components/AppBar";
 import DATABASE_URL from "../config";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { PageWrapper } from "../components/PageWrapper";
+
 export const Publish = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
+
   return (
-    <div>
-      <AppBar />
-      <div className="pt-8 flex justify-center">
-        <div className=" max-w-screen-lg w-full">
-          <input
-            type="text"
-            id="title"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
-            placeholder="Title"
-            required
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
-          />
-          <div className="pt-6">
+    <PageWrapper>
+      <>
+        <AppBar />
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="pt-12 flex justify-center"
+        >
+          <div className="max-w-screen-lg w-full bg-white p-8 rounded-2xl shadow-md hover:shadow-xl border">
+            <input
+              type="text"
+              placeholder="Title"
+              className="w-full text-3xl font-bold border-none focus:outline-none placeholder:text-gray-400"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
             <textarea
-              id="message"
-              rows={8}
-              className="focus-outline-none block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 "
-              placeholder="Write your thoughts here..."
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            ></textarea>
-          </div>
-          <div className="pt-10 ">
-            <button
-              type="submit"
-              className=" inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white bg-green-500 rounded-lg focus:ring-4 focus:ring-green-200 hover:bg-green-700"
+              rows={10}
+              placeholder="Tell your story..."
+              className="mt-6 w-full text-lg text-gray-600 border-none focus:outline-none resize-none placeholder:text-gray-400"
+              onChange={(e) => setDescription(e.target.value)}
+            />
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-8 px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium"
               onClick={async () => {
-                // Add your logic here to publish the post
-                console.log("working");
                 const response = await axios.post(
-                  `
-                  ${DATABASE_URL}/api/v1/blog
-                `,
-                  {
-                    title,
-                    content: description,
-                  },
+                  `${DATABASE_URL}/api/v1/blog`,
+                  { title, content: description },
                   {
                     headers: {
                       Authorization: localStorage.getItem("token"),
                     },
                   }
                 );
-                console.log(response);
                 navigate(`/blog/${response.data.blog.id}`);
-                console.log("Post published successfully!");
               }}
             >
-              Publish post
-            </button>
+              Publish
+            </motion.button>
           </div>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </>
+    </PageWrapper>
   );
 };

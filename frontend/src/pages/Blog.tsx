@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useBlog } from "../hooks";
 import { useParams } from "react-router-dom";
 import { FullBlog } from "../components/FullBlog";
+import { PageWrapper } from "../components/PageWrapper";
 
 export const Blog = () => {
   const { id } = useParams();
@@ -23,8 +23,10 @@ export const Blog = () => {
   }
 
   return (
-    <div>
-      <FullBlog blog={blog} />
-    </div>
+    <PageWrapper>
+      <div>
+        <FullBlog blog={blog} />
+      </div>
+    </PageWrapper>
   );
 };

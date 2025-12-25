@@ -1,38 +1,58 @@
 import { Blog } from "../hooks";
 import { AppBar } from "./AppBar";
 import { Avatar2 } from "./BlogCard";
+import { motion } from "framer-motion";
+
 export const FullBlog = ({ blog }: { blog: Blog }) => {
   return (
-    <div>
+    <>
       <AppBar />
-      <div className="flex justify-center">
-        <div className="grid grid-cols-12 pt-12 w-full px-10 pt-200 max-w-screen-xl">
-          <div className="col-span-8   ">
-            <div className="text-5xl font-extrabold">{blog.title}</div>
-            <div className=" text-base text-slate-400 pt-2">
-              Posted on 30 October 24
-            </div>
-            <div className="text-medium font-normal pt-2">{blog.content}</div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="flex justify-center"
+      >
+        <div className="grid grid-cols-12 gap-10 pt-16 w-full px-10 max-w-screen-xl">
+          {/* Blog content */}
+          <div className="col-span-8">
+            <h1 className="text-5xl font-extrabold leading-tight">
+              {blog.title}
+            </h1>
+
+            <p className="text-sm text-slate-400 mt-3">
+              Posted on 30 October 2024 · {Math.ceil(blog.content.length / 120)}{" "}
+              min read
+            </p>
+
+            <article className="prose prose-lg mt-10 max-w-none">
+              {blog.content}
+            </article>
           </div>
-          <div className=" col-span-4 ">
-            <div className="text-slate-600 text-lg">Author</div>
-            <div className="flex w-full ">
-              <div className="pr-4 flex flex-col justify-center">
-                <Avatar2 name={blog.author.name} />
-              </div>
+
+          {/* Author card */}
+          <motion.div
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.3 }}
+            className="col-span-4 h-fit sticky top-28 bg-white rounded-2xl border p-6  hover:shadow-lg shadow-md"
+          >
+            <p className="text-slate-500 text-sm uppercase tracking-wide">
+              Author
+            </p>
+
+            <div className="flex items-center gap-4 mt-4 ">
+              <Avatar2 name={blog.author.name} />
               <div>
-                <div className="text-3xl font-bold pl-3">
-                  {blog.author.name}
-                </div>
-                <div className="pt-2 text-slate-500">
-                  Random catch phrase about Author ability to grab user's
-                  attention
-                </div>
+                <p className="text-xl font-bold">{blog.author.name}</p>
+                <p className="text-slate-500 text-sm mt-1">
+                  Writing about Web, Web3 & life
+                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </>
   );
 };

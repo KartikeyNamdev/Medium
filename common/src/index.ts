@@ -11,8 +11,13 @@ export const signinInput = z.object({
 });
 
 export const createbloginput = z.object({
-  title: z.string(),
-  content: z.string(),
+  title: z.string().min(3),
+  subtitle: z.string().optional(),
+  content: z.string().min(50),
+  excerpt: z.string().min(20),
+  coverImage: z.string().url().optional(),
+  tags: z.array(z.string()).max(5),
+  published: z.boolean(),
 });
 
 export const updateBlog = z.object({
