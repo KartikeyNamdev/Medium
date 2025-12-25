@@ -42,29 +42,33 @@ blogRouter.use("/*", async (c, next) => {
 
 blogRouter.post("/", async (c) => {
   const body = await c.req.json();
-  const success = createbloginput.safeParse(body);
-  if (!success) {
-    return c.json({
-      msg: "Wrong input",
-    });
-  }
-  try {
-    const prisma = getPrismaClient(c.env.DATABASE_URL);
+  const parsed = createbloginput.safeParse(body);
 
-    const blog = await prisma.blog.create({
-      data: {
-        title: body.title,
-        content: body.content,
-        authorId: 1,
-      },
-    });
-
-    return c.json({
-      blog,
-    });
-  } catch (e) {
-    return c.json({ message: e });
+  if (!parsed.success) {
+    c.status(400);
+    return c.json({ msg: "Invalid input" });
   }
+
+  const prisma = getPrismaClient(c.env.DATABASE_URL);
+  const userId = c.get("userId");
+
+  const readingTime = Math.ceil(body.content.split(" ").length / 200);
+
+  const blog = await prisma.blog.create({
+    data: {
+      title: body.title,
+
+      content: body.content,
+
+      coverImage: body.coverImage,
+      tags: body.tags,
+      readingTime,
+      published: body.published,
+      authorId: userId,
+    },
+  });
+
+  return c.json({ blog });
 });
 
 blogRouter.put("/", async (c) => {
